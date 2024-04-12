@@ -24,31 +24,30 @@ app.get("/api",(req,res)=>{
 })
 // your first API endpoint...
 app.get("/api/:date", function (req, res) {
- 
-  if (req.params.date.includes("-")) {
-    let param = req.params.date;
-    let fixDate = new Date(param);
-    if (fixDate == "Invalid Date") {
+  let param = req.params.date;
+  
+  // Check if the parameter is a number (not a string with a hyphen)
+  if (!isNaN(parseInt(param)) && !param.includes("-")) {
+    let unixTimestamp = parseInt(param);
+    let fixDate = new Date(unixTimestamp);
+    
+    // Check if the date is valid
+    if (isNaN(fixDate.getTime())) {
       res.json({ error: "Invalid Date" });
     } else {
-      let milisec = fixDate.getTime();
-      res.json({ unix: milisec, utc: `${fixDate.toUTCString()}` });
+      res.json({ unix: unixTimestamp, utc: fixDate.toUTCString() });
     }
   } else {
-    console.log(req.params.date.length);
-    let param = parseInt(req.params.date);
+    // Handle dates given as strings (e.g. "2015-12-25")
     let fixDate = new Date(param);
-    if(fixDate == "Invalid Date"){
+    
+    // Check if the date is valid
+    if (isNaN(fixDate.getTime())) {
       res.json({ error: "Invalid Date" });
-      
-    }else{
-      
-      res.json({ unix: param, utc: `${fixDate.toUTCString()}` });
+    } else {
+      res.json({ unix: fixDate.getTime(), utc: fixDate.toUTCString() });
     }
-
   }
-
-  
 });
 
 // Listen on port set in environment variable or default to 3000
