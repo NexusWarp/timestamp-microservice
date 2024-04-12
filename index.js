@@ -25,30 +25,30 @@ app.get("/api",(req,res)=>{
 // your first API endpoint...
 app.get("/api/:date", function (req, res) {
   let param = req.params.date;
-  
-  // Check if the parameter is a number (not a string with a hyphen)
-  if (!isNaN(parseInt(param)) && !param.includes("-")) {
-    let unixTimestamp = parseInt(param);
-    let fixDate = new Date(unixTimestamp);
-    
-    // Check if the date is valid
-    if (isNaN(fixDate.getTime())) {
-      res.json({ error: "Invalid Date" });
-    } else {
-      res.json({ unix: unixTimestamp, utc: fixDate.toUTCString() });
-    }
+  let fixDate;
+
+  // Check if the parameter is a number or a numeric string
+  if (!isNaN(param)) {
+      // Convert the numeric parameter to a number and create a Date object from it
+      let timestamp = parseInt(param, 10);
+      fixDate = new Date(timestamp);
   } else {
-    // Handle dates given as strings (e.g. "2015-12-25")
-    let fixDate = new Date(param);
-    
-    // Check if the date is valid
-    if (isNaN(fixDate.getTime())) {
+      // Create a Date object from the string parameter
+      fixDate = new Date(param);
+  }
+
+  // Check if the Date object is valid
+  if (isNaN(fixDate.getTime())) {
       res.json({ error: "Invalid Date" });
-    } else {
-      res.json({ unix: fixDate.getTime(), utc: fixDate.toUTCString() });
-    }
+  } else {
+      // Return the Unix timestamp and UTC date
+      res.json({
+          unix: fixDate.getTime(),
+          utc: fixDate.toUTCString()
+      });
   }
 });
+
 
 // Listen on port set in environment variable or default to 3000
 var listener = app.listen(process.env.PORT || 3000, function () {
