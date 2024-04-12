@@ -18,6 +18,10 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
+let cDate = new Date("2015-12-25");
+let milisec = cDate.getTime();
+
+console.log(cDate.toUTCString());
 
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
