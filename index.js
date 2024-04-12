@@ -18,17 +18,31 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
-let unixCode = 1451001600000;
-let cDate = new Date(unixCode);
-let milisec = cDate.getTime();
-
-console.log(cDate.toUTCString());
-// console.log(cDate);
 
 
 // your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
+app.get("/api/:date", function (req, res) {
+  if(req.params.date.includes("-")){
+    let param = req.params.date;
+    let cDate = new Date(param);
+    let milisec = cDate.getTime();
+    
+    
+    res.json({"unix":milisec, "utc":`${cDate.toUTCString()}`});
+    
+  }else{
+    
+    let param = parseInt(req.params.date);
+    let cDate = new Date(param);
+
+    res.json({"unix":param, "utc":`${cDate.toUTCString()}`});
+    
+  }
+  
+  let unixCode = 1451001600000;
+  
+ 
+
 });
 
 
